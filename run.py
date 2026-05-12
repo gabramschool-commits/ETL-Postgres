@@ -1,6 +1,8 @@
 from extract import run_extract
 from transform import transform_data
 from load import load_big_table
+import traceback
+import time
 
 
 def main():
@@ -22,4 +24,15 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+
+    try:
+        main()
+
+    except Exception as e:
+        print("\n===== FULL ERROR =====")
+        traceback.print_exc()
+        print("======================\n")
+
+    # Keep service alive so logs stay visible
+    while True:
+        time.sleep(100)
