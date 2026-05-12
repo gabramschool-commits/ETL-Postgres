@@ -1,11 +1,21 @@
 from extract import run_extract
 from transform import transform_data
 from load import load_big_table
-import traceback
-import time
+
+from flask import Flask
+import threading
+import os
+
+app = Flask(__name__)
 
 
-def main():
+@app.route("/")
+def home():
+    return "ETL Pipeline Running Successfully"
+
+
+def run_etl():
+
     print(">>> Starting ETL Pipeline <<<\n")
 
     print("Step 1: Extracting data…")
@@ -25,14 +35,10 @@ def main():
 
 if __name__ == "__main__":
 
-    try:
-        main()
+    # Run ETL in background
+    threading.Thread(target=run_etl).start()
 
-    except Exception as e:
-        print("\n===== FULL ERROR =====")
-        traceback.print_exc()
-        print("======================\n")
+    # Open web port for Render
+    port = int(os.environ.get("PORT", 10000))
 
-    # Keep service alive so logs stay visible
-    while True:
-        time.sleep(100)
+    app.run(host="0.0.0.0", port=port)
